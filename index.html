@@ -5,6 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/glightbox.min.css">
   <title>A place inside my mind</title>
 </head>
 <body>
@@ -16,8 +17,31 @@
     <section class="hero-text-box">
       <h1 class="hero-heading">swimming in circles</h1>
       <p class="hero-text">and i was drowning, but now im swimmming... through stressful waters to relief</p>
+      <p>
+        <a href="#portfolio">
+          <button type="button" class="hero-button">View Portfolio</button>
+        </a>
+      </p>
     </section>
   </header>
   <!-- End Hero Header -->
+
+  <!--Begin Portfolio-->
+<section id="portfolio" class="portfolio-container">
+  <h1>portfolio</h1>
+  <section class="portfolio-gallery"></section>
+  <div class="gallery-item">
+    <a href="img/mutona-othenton-ajwain-flower.jpg" class="glightbox" data-glightbox="title: Flower; description: this is where we end and start again">
+      <img src="img/mutona-othenton-ajwain-flower.jpg" alt="a image of a flower" class="gallery-img" c></a>
+  </div>
+  <div class="gallery-item">
+    <a href="img/mutona-othenton-red-melastomes.jpg" class="glightbox" class="gallery-img"></a>
+  </div>">
+  </section>
+  <!--End Portfolio-->
+
+<script src="js/glightbox.min.js"></script>
+<script type="text/javascript">
+const lightbox = GLightbox({ loop: true});</script>
 </body>
 </html>
