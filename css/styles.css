@@ -73,7 +73,7 @@ video {
     text-align: center;
 }
 
-.social-pay-item {
+.social-nav-item {
     flex-grow: 1;
     flex-shrink: 1;
     flex-basis: 10%;
@@ -96,7 +96,7 @@ video {
 
 .nav-menu a {
     font-weight: 400;
-    letter-spacing: 1.rem;
+    letter-spacing: 0.1rem;
     border-bottom: 1px solid #fff;
     transition: all ease 0.1s;
 
