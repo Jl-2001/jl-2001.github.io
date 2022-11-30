@@ -35,6 +35,73 @@ video {
     display: block;
 }
 
+/* Nav Bar Style */
+
+.nav-bar{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    line-height:1rem;
+    overflow: hidden;
+    background-color: #fff;
+    z-index:100;
+}
+
+.logo, .nav-menu {
+    text-transform: uppercase
+}
+
+.logo, .navbar-item{
+    white-space: nowrap;
+}
+
+.nav-menu {
+    list-style: none;
+    display:flex;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-item {
+    flex-grow: 1;
+    flex-shrink: 0;
+    flex-basis: 33.3%;
+    text-align: center;
+}
+
+.social-pay-item {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 10%;
+}
+
+
+.log a, 
+.nav-meu a {
+    display: block;
+    text-decoration: none;
+    letter-spacing: 0.2rem;
+    padding: 0.8 rem;
+    color:#000;
+}
+
+.logo a {
+    font-weight: 700;
+    font-size: 2rem;
+}
+
+.nav-menu a {
+    font-weight: 400;
+    letter-spacing: 1.rem;
+    border-bottom: 1px solid #fff;
+    transition: all ease 0.1s;
+
+}
+
 /* Hero Styles */
 
 .hero-box {
@@ -159,6 +226,39 @@ video {
 .gallery-img:hover {
     transform: scale(1.5);
 }
+
+/* About Styles */
+
+.about-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    margin: 1rem auto 0 auto;
+}
+
+.about-text {
+    margin: 0 auto;
+}
+
+.about-text h1 {
+    font-size: 2rem;
+    line-height: 2rem;
+}
+
+.about-image img {
+    height: 100%;
+    object-fit: cover;
+}
+
+.about-social {
+    display: flex;
+    justify-content: start;
+}
+
+.about-social a {
+    color:black;
+    padding: 0 1rem 1rem 1rem;
+}
+
 /* Add Meda Queries for Large Screens */
 
 @media (min-width: 600px) {
@@ -178,6 +278,21 @@ video {
     .portfolio-container h1 {
         font-size: 3rem;
         line-height: 3rem;
+    }
+
+    .about-container {
+        grid-template-columns: 1fr 1fr;
+        grid-gap: 1rem;
+    }
+
+    .about-text h1{
+        font-size: 3rem;
+        line-height: 3rem;
+    }
+
+    .about-text p {
+        font-size: 1.1rem;
+        line-height:  1.5rem;
     }
 }
 
