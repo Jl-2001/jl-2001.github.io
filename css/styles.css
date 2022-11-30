@@ -99,7 +99,11 @@ video {
     letter-spacing: 0.1rem;
     border-bottom: 1px solid #fff;
     transition: all ease 0.1s;
+}
 
+
+.nav-menu a:hover {
+border-bottom: 1px solid #000;
 }
 
 /* Hero Styles */
