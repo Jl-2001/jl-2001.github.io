@@ -106,6 +106,14 @@ video {
 border-bottom: 1px solid #000;
 }
 
+/* Top Navbar Only Styles */
+
+.top-nav{
+    background: none;
+    position: fixed;
+    top: 0;
+}
+
 /* Hero Styles */
 
 .hero-box {
