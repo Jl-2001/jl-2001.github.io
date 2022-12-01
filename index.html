@@ -11,7 +11,7 @@
 </head>
 <body>
   <!-- Begin Top Nav -->
-  <nav class="nav-bar top-nav">
+  <nav id="top-nav-bar" class="nav-bar top-nav">
     <h1 class="logo"><a href="index html">Jorge Lazaro</index></a></h1>
     <ul class="nav-menu">
       <li class="nav-item"><a href="#portfolio">Portfolio</a></li>
@@ -54,7 +54,7 @@
   <!-- End Hero Header -->
 
   <!--Begin Portfolio-->
-<section id="portfolio" class="portfolio-container">
+<section id="portfolio" class="portfolio-container section-stop">
   <h1>portfolio</h1>
   <section class="portfolio-gallery"></section>
   <div class="gallery-item">
@@ -68,7 +68,7 @@
   <!--End Portfolio-->
 
   <!-- Begin About-->
-  <section id="about" class="about-container">
+  <section id="about" class="about-container section-stop">
     <section class="about-text">
       <h1>swimming in circles is a way of life. Where life begins, and also ends.</h1>
       <p>I think we just might be alright
@@ -96,6 +96,26 @@
     </section>
   </section>
   <!--End About-->
+
+<!-- Begin Footer -->
+
+<!-- End Footer -->
+
+
+  <script>
+    window.onscroll = function () {
+      scrollfunction();
+    }
+
+    function scrollFunction() {
+      if (documnet.bodt.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        document.getElementById("top-nav-bar").style.background = "#000000" ;
+      }
+      else {
+        document.getElementById("top-nav-bar").style.background = "none";
+      }
+    }
+  </script>
 
 <script src="js/glightbox.min.js"></script>
 <script type="text/javascript">
