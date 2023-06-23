@@ -96,15 +96,16 @@ video {
 .logo a {
     font-weight: 700;
     font-size: 2rem;
-    padding: 0.8 rem;
+    padding: 0.8rem;
     color: #A9A9A9;
 }
 
 .nav-menu a {
-    font-weight: 400;
+    font-weight: 500;
     letter-spacing: 0.1rem;
     border-bottom: 1px solid #fff;
     transition: all ease 0.1s;
+    color: #A9A9A9;
 }
 
 
@@ -397,11 +398,11 @@ border-bottom: 1px solid #000;
 
 @media (max-width:477px) {
     #header {
-        padding: 1rem;
+        padding: 0.1rem;
     }
     .top-nav{
         padding: 0rem;
-        height: 8rem;
+        height: 16rem;
     }
     .nav-meu a {
         display: block;
@@ -409,17 +410,11 @@ border-bottom: 1px solid #000;
         letter-spacing: 0.1rem;
         padding: 0.1rem;
         color:#000;
-    .nav-bar {
-        display: flex;
+    }
+    nav.nav-bar {
         justify-content: center;
         align-items: center;
-        overflow: hidden;
-        background-color: #fff;
-        height: 8rem;
-    }
-    ul.nav-menu {
-        padding: 0rem;
-        height: 3rem;
+        height: 9.5rem;
     }
     body {
         padding: 0rem;
