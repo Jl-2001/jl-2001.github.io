@@ -24,7 +24,12 @@ jobs:
           node-version: 20
           cache: "npm"
 
-      - run: npm install
+      - name: Clean install (fix Rollup optional dep bug)
+        run: |
+          npm cache clean --force
+          rm -rf node_modules package-lock.json
+          npm install --no-audit --no-fund
+
       - run: npm run build
 
       - uses: actions/upload-pages-artifact@v3
