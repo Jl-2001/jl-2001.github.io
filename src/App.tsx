@@ -575,10 +575,7 @@ export default function App() {
       <div className="absolute top-12 left-32 w-20 h-8 rounded-full bg-white/50 blur-sm pointer-events-none" />
       <div className="absolute top-6 right-24 w-40 h-12 rounded-full bg-white/60 blur-sm pointer-events-none" />
 
-      <div
-        className="relative z-10 flex flex-col sm:flex-row gap-4 items-start w-full max-w-4xl"
-        style={{ fontFamily: "Tahoma, Verdana, Geneva, sans-serif" }}
-      >
+      <div className="contents" style={{ all: "revert" }}>
         <SignOnPanel />
         <MessengerWindow />
       </div>
