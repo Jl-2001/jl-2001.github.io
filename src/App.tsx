@@ -4,8 +4,6 @@ import {
   Music2,
   Mountain,
   Clock,
-  Search,
-  CloudRain,
   Download,
   HelpCircle,
   Settings,
@@ -86,7 +84,7 @@ const PROJECTS: Project[] = [
     status: "online",
     desc: "A social music discovery app. Users sync Spotify listening history, get AI-curated playlists, and match with friends by taste.",
     tech: ["React", "Node.js", "Spotify API", "PostgreSQL"],
-    link: "#"
+    link: "http://musipal-api-alb-1562654769.us-east-2.elb.amazonaws.com/login"
   },
   {
     id: "outdoor",
@@ -98,31 +96,13 @@ const PROJECTS: Project[] = [
     link: "#"
   },
   {
-    id: "timesheet",
+    id: "Help Desk Ticket in C#",
     icon: <Clock size={14} className="inline-block mr-1.5 shrink-0" />,
-    name: "Timesheet App",
+    name: "Help Desk Ticket in C#",
     status: "online",
     desc: "Internal HR tool replacing Excel chaos — auto-approvals, manager dashboards, CSV exports, and Slack notifications.",
-    tech: ["Vue 3", "Express", "MySQL", "Slack API"],
-    link: "#"
-  },
-  {
-    id: "crm",
-    icon: <Search size={14} className="inline-block mr-1.5 shrink-0" />,
-    name: "Streamline CRM",
-    status: "away",
-    desc: "Lightweight CRM for small agencies. Pipeline kanban, email threading, and one-click PDF proposals.",
-    tech: ["React", "Rails API", "Tailwind", "Heroku"],
-    link: "#"
-  },
-  {
-    id: "weather",
-    icon: <CloudRain size={14} className="inline-block mr-1.5 shrink-0" />,
-    name: "Weather Dashboard",
-    status: "offline",
-    desc: "Real-time weather dashboard with animated radar, 7-day forecasts, and severe weather alerts via SMS.",
-    tech: ["Svelte", "OpenWeather API", "Twilio", "Vercel"],
-    link: "#"
+    tech: ["C#", ".NET 8.0", "Typescript", "Postgres", "Docker", "Next Js"],
+    link: "https://github.com/Jl-2001/HelpDesk-Tickets-C-"
   }
 ];
 
@@ -132,11 +112,12 @@ type QuickCmd = (typeof QUICK_CMDS)[number];
 const SKILLS_LIST: string[] = [
   "JavaScript / TypeScript",
   "React & Next.js",
-  "Vue 3",
+  "AWS",
   "Node / Express",
   "PostgreSQL / MySQL",
   "REST & GraphQL",
   "Docker & CI/CD",
+  "C# @ ASP.NET",
   "IT Support / Sysadmin"
 ];
 
@@ -274,12 +255,19 @@ function SignOnPanel() {
           <RunningMan className="w-4 h-4" /> Sign On
         </button>
 
-        <button
-          className="w-full flex items-center justify-center gap-2 text-gray-700 font-semibold text-sm py-2 rounded-md shadow border border-gray-300 hover:brightness-95 active:scale-95 transition-all"
-          style={{ background: "linear-gradient(180deg,#eee 0%,#d4d4d4 100%)" }}
+        <a
+          href="/public/Jorge Lazaro Software Developer Resume 2026.pdf"
+          download
         >
-          <Download size={14} /> Download Resume
-        </button>
+          <button
+            className="w-full flex items-center justify-center gap-2 text-gray-700 font-semibold text-sm py-2 rounded-md shadow border border-gray-300 hover:brightness-95 active:scale-95 transition-all"
+            style={{
+              background: "linear-gradient(180deg,#eee 0%,#d4d4d4 100%)"
+            }}
+          >
+            <Download size={14} /> Download Resume
+          </button>
+        </a>
 
         <div className="flex justify-between text-xs text-blue-700 font-semibold">
           <button className="hover:underline flex items-center gap-1">
