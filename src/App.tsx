@@ -257,7 +257,7 @@ function SignOnPanel() {
 
         <a
           href="/public/Jorge Lazaro Software Developer Resume 2026.pdf"
-          download
+          download="/public/Jorge Lazaro Software Developer Resume 2026.pdf"
         >
           <button
             className="w-full flex items-center justify-center gap-2 text-gray-700 font-semibold text-sm py-2 rounded-md shadow border border-gray-300 hover:brightness-95 active:scale-95 transition-all"
