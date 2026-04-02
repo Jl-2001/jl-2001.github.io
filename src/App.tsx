@@ -576,7 +576,7 @@ export default function App() {
       <div className="absolute top-12 left-32 w-20 h-8 rounded-full bg-white/50 blur-sm pointer-events-none" />
       <div className="absolute top-6 right-24 w-40 h-12 rounded-full bg-white/60 blur-sm pointer-events-none" />
 
-      <div className="contents" style={{ all: "revert" }}>
+      <div className="flex gap-6 items-start">
         <SignOnPanel />
         <MessengerWindow />
       </div>
