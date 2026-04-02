@@ -1,4 +1,5 @@
-import { useState, useRef, useEffect, ReactNode, KeyboardEvent } from "react";
+import { useState, useRef, useEffect } from "react";
+import type { ReactNode, KeyboardEvent } from "react";
 import {
   Music2,
   Mountain,
