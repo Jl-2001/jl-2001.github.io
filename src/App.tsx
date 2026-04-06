@@ -409,7 +409,7 @@ function MessengerWindow() {
           onClick={() => setShowBuddy((v) => !v)}
           className="ml-auto flex items-center gap-1 md:hidden text-blue-600 font-semibold"
         >
-          Buddies{" "}
+          Projects{" "}
           {showBuddy ? <ChevronLeft size={12} /> : <ChevronRight size={12} />}
         </button>
       </div>
