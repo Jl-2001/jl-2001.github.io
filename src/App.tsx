@@ -257,8 +257,8 @@ function SignOnPanel() {
           </button>
         </a>
         <a
-          href="/Jorge%20Lazaro%20Info%20Tech%20Resume.pdf"
-          download="/Jorge_Lazaro_Info_Tech.pdf"
+          href="/Jorge%20Lazaro%20Info%20Tech.pdf"
+          download="Jorge_Lazaro_Info_Tech.pdf"
         >
           <button
             className="w-full flex items-center justify-center gap-2 text-gray-700 font-semibold text-sm py-2 rounded-md shadow border border-gray-300 hover:brightness-95 active:scale-95 transition-all"
