@@ -253,7 +253,20 @@ function SignOnPanel() {
               background: "linear-gradient(180deg,#eee 0%,#d4d4d4 100%)"
             }}
           >
-            <Download size={14} /> Download Resume
+            <Download size={14} /> Download SWE Resume
+          </button>
+        </a>
+        <a
+          href="/Jorge%20Lazaro%20Info%20Tech%20Resume.pdf"
+          download="/Jorge_Lazaro_Info_Tech.pdf"
+        >
+          <button
+            className="w-full flex items-center justify-center gap-2 text-gray-700 font-semibold text-sm py-2 rounded-md shadow border border-gray-300 hover:brightness-95 active:scale-95 transition-all"
+            style={{
+              background: "linear-gradient(180deg,#eee 0%,#d4d4d4 100%)"
+            }}
+          >
+            <Download size={14} /> Download IT Resume
           </button>
         </a>
         <div className="flex justify-between text-xs text-blue-700 font-semibold">
