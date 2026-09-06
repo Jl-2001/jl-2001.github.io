@@ -1,605 +1,1061 @@
-import { useState, useRef, useEffect } from "react";
-import type { ReactNode, KeyboardEvent } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import {
-  Music2,
-  Mountain,
-  Clock,
-  Download,
-  HelpCircle,
-  Settings,
-  Volume2,
-  TriangleAlert,
-  Ban,
-  ChevronLeft,
-  ChevronRight
-} from "lucide-react";
+  IconCaret,
+  IconChevron,
+  IconDownload,
+  IconExternal,
+  IconGitHub,
+  IconHeadphones,
+  IconLinkedIn,
+  IconMail,
+  IconMountain,
+  IconMusic,
+  IconTerminal,
+  IconTicket,
+  IconTrophy,
+  IconUsers,
+  PixelAvatar,
+  PixelBuddy
+} from "./PixelIcons";
 
-type Status = "online" | "away" | "offline";
+/* ───────────────────────────────────────────────────────────
+   CONTENT — every fact below is taken from Jorge's résumés.
+   Nothing here is invented. Update LINKEDIN_URL when available.
+   ─────────────────────────────────────────────────────────── */
+
+// TODO(Jorge): paste your LinkedIn profile URL here, e.g.
+// "https://www.linkedin.com/in/your-handle". Left blank so no broken
+// link ships — the LinkedIn buttons hide themselves until it's set.
+const LINKEDIN_URL = "";
+
+const PROFILE = {
+  name: "Jorge Lazaro",
+  role: "Software Developer",
+  location: "Minneapolis, Minnesota",
+  specialtyTags: [
+    { label: "FULL-STACK", tone: "blue" },
+    { label: "CLOUD", tone: "purple" },
+    { label: "SECURITY", tone: "green" }
+  ],
+  status: "Open to opportunities",
+  blurb:
+    "Full-stack developer building REST APIs in C#/.NET and Node.js, modern React/Next.js apps, and cloud-hosted systems on AWS.",
+  blurbSecurity:
+    "Growing expertise in cybersecurity and secure software development.",
+  email: "j.lazaro0101@gmail.com",
+  github: "https://github.com/Jl-2001",
+  resumeSwe: "/Jorge%20Lazaro%20Software%20Developer%20Resume%202026.pdf",
+  resumeIt: "/Jorge%20Lazaro%20Info%20Tech.pdf"
+};
+
+type Accent = "blue" | "cyan" | "gold" | "green" | "purple" | "orange";
 
 interface Project {
   id: string;
-  icon: ReactNode;
   name: string;
-  status: Status;
-  desc: string;
-  tech: string[];
-  link: string;
+  tagline: string;
+  type: string;
+  glyph: ReactNode;
+  featured: boolean;
+  accent: Accent;
+  stack: string[];
+  mission: string;
+  objectives: string[];
+  security?: string;
+  demo?: string;
+  source?: string;
 }
-
-interface Message {
-  from: "system" | "user";
-  text: string;
-  tags?: string[];
-  link?: string;
-}
-
-interface WinChromeProps {
-  title: string;
-  icon: ReactNode;
-  children: ReactNode;
-  className?: string;
-}
-
-interface DotProps {
-  status: Status | string;
-}
-
-const RunningMan = ({ className = "" }: { className?: string }) => (
-  <svg
-    className={className}
-    viewBox="0 0 16 16"
-    fill="currentColor"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <circle cx="9" cy="2.5" r="1.8" />
-    <path d="M6.5 5.5 Q8 4.5 10 5.5 L11.5 9 L9.5 9 L8.5 7 L7.5 10.5 L9 13.5 L7.5 13.5 L6 10.5 L4.5 9 L5.5 9 Z" />
-    <path
-      d="M5 8.5 L3.5 10 M10.5 8.5 L12 10"
-      strokeWidth="1"
-      stroke="currentColor"
-      fill="none"
-    />
-  </svg>
-);
-
-const AolIcon = ({ className = "" }: { className?: string }) => (
-  <svg
-    className={className}
-    viewBox="0 0 20 20"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <circle cx="10" cy="10" r="9" fill="#4A90D9" />
-    <path d="M6 14 L10 6 L14 14" stroke="white" strokeWidth="2" fill="none" />
-    <path d="M7.5 11.5 L12.5 11.5" stroke="white" strokeWidth="1.5" />
-  </svg>
-);
 
 const PROJECTS: Project[] = [
   {
     id: "musipal",
-    icon: <Music2 size={14} className="inline-block mr-1.5 shrink-0" />,
-    name: "Musipal",
-    status: "online",
-    desc: "A social music discovery app. Users sync Spotify listening history, get AI-curated playlists, and match with friends by taste.",
-    tech: ["React", "Node.js", "Spotify API", "PostgreSQL"],
-    link: "http://musipal-api-alb-1562654769.us-east-2.elb.amazonaws.com/login"
-  },
-  {
-    id: "outdoor",
-    icon: <Mountain size={14} className="inline-block mr-1.5 shrink-0" />,
-    name: "Outdoor Adventures",
-    status: "online",
-    desc: "Trail-finding PWA with offline maps, elevation profiles, and community trip reports. 10k+ monthly active users.",
-    tech: ["Next.js", "Mapbox", "PWA", "Firebase"],
-    link: "#"
+    name: "MUSIPAL",
+    tagline: "Full-Stack Music Social Platform",
+    type: "Full-Stack",
+    glyph: <IconMusic />,
+    featured: true,
+    accent: "blue",
+    stack: ["React", "Node.js", "Express", "PostgreSQL", "Spotify API"],
+    mission:
+      "Discover music, connect with people, and interact socially around shared listening taste.",
+    objectives: [
+      "Designed and built a full-stack application enabling users to discover music, connect, and interact socially.",
+      "Implemented authentication, real-time Spotify API integration, and dynamic UI updates.",
+      "Designed SQL queries and JOINs to generate friend suggestions based on shared interests."
+    ],
+    security:
+      "User authentication with login/session handling, and integration with the Spotify authorization flow for third-party API access.",
+    demo: "http://musipal-api-alb-1562654769.us-east-2.elb.amazonaws.com/login"
   },
   {
     id: "helpdesk",
-    icon: <Clock size={14} className="inline-block mr-1.5 shrink-0" />,
-    name: "Help Desk Ticket in C#",
-    status: "online",
-    desc: "Internal HR tool replacing Excel chaos — auto-approvals, manager dashboards, CSV exports, and Slack notifications.",
-    tech: ["C#", ".NET 8.0", "TypeScript", "Postgres", "Docker", "Next.js"],
-    link: "https://github.com/Jl-2001/HelpDesk-Tickets-C-"
+    name: "HELP DESK TICKETING",
+    tagline: "REST API · C# / .NET 8",
+    type: "Backend · API",
+    glyph: <IconTicket />,
+    featured: true,
+    accent: "cyan",
+    stack: ["C#", ".NET 8", "ASP.NET Core", "SQL", "React", "Next.js"],
+    mission:
+      "A RESTful ticketing service for creating, retrieving, and tracking help desk tickets, wired to a React/Next.js UI.",
+    objectives: [
+      "Built a RESTful Web API using C# and .NET 8 to manage help desk tickets — creation, retrieval, and status tracking.",
+      "Designed a controller + endpoint architecture with dependency injection, DTOs, and separation of concerns.",
+      "Implemented POST and GET endpoints, request validation, and structured responses following REST best practices.",
+      "Integrated the API with a React/Next.js frontend for real-time ticket submission and display."
+    ],
+    security:
+      "Request validation on every endpoint, DTOs to constrain request/response models and limit over-posting, and structured error responses following REST conventions.",
+    source: "https://github.com/Jl-2001/HelpDesk-Tickets-C-"
+  },
+  {
+    id: "japahub",
+    name: "JAPAHUB",
+    tagline: "Mentorship & Community Platform",
+    type: "Full-Stack",
+    glyph: <IconUsers />,
+    featured: true,
+    accent: "purple",
+    stack: ["Next.js", "TypeScript", "Node.js", "Express", "Docker"],
+    mission: "A platform focused on mentorship and community resources.",
+    objectives: [
+      "Built a platform focused on mentorship and community resources.",
+      "Developed backend services and REST APIs with scalability in mind.",
+      "Collaborated on architecture decisions and feature planning."
+    ]
+  },
+  {
+    id: "outdoor",
+    name: "MY OUTDOOR ADVENTURES",
+    tagline: "Local Activity Finder",
+    type: "Full-Stack",
+    glyph: <IconMountain />,
+    featured: false,
+    accent: "orange",
+    stack: ["React", "Node.js", "Express", "PostgreSQL", "Google Maps API"],
+    mission:
+      "Helps users discover local activities filtered by difficulty, price, and location.",
+    objectives: [
+      "Built a full-stack web app that helps users discover local activities based on difficulty level, price, and location.",
+      "Integrated the Google Maps API to display activity locations and improve navigation and discovery.",
+      "Collaborated in an Agile team using sprints, task planning, and iterative delivery."
+    ]
+  },
+  {
+    id: "listening-rooms",
+    name: "SPOTIFY LISTENING ROOMS",
+    tagline: "Real-Time Listening Rooms · Python",
+    type: "Backend",
+    glyph: <IconHeadphones />,
+    featured: false,
+    accent: "gold",
+    stack: ["Python", "Spotify Web API", "Session Management"],
+    mission:
+      "A Python backend that powers real-time Spotify listening rooms so users can sync and share playback.",
+    objectives: [
+      "Developed a Python backend service powering real-time Spotify listening rooms.",
+      "Integrated the Spotify Web API to retrieve playback state, track metadata, and listening position.",
+      "Implemented logic to track song progress and session state, keeping users synchronized in a shared room."
+    ],
+    security:
+      "Per-room session management and server-side state tracking, backed by the Spotify Web API's authenticated access to playback data."
+  },
+  {
+    id: "vm-lab",
+    name: "VM DEPLOYMENT & LINUX ADMIN",
+    tagline: "Security Labs · Linux Hardening",
+    type: "Infrastructure · Security",
+    glyph: <IconTerminal />,
+    featured: false,
+    accent: "green",
+    stack: ["Ubuntu", "Kali Linux", "Bash", "PowerShell", "UFW Firewall"],
+    mission:
+      "Built and configured virtual machines for enterprise training and security labs, with hardened networking and firewall rules.",
+    objectives: [
+      "Created and configured VMs using Ubuntu and Kali Linux for enterprise-level training and security labs.",
+      "Managed network adapters, NAT/Bridged connections, user accounts, permissions, and UFW firewall settings.",
+      "Performed Linux administration with Bash and PowerShell for troubleshooting and automation."
+    ],
+    security:
+      "Host firewall (UFW) rule management, least-privilege user and permission setup, and isolated NAT/bridged network segments to contain lab traffic."
   }
 ];
 
-const QUICK_CMDS = ["projects", "resume", "contact", "skills"] as const;
-type QuickCmd = (typeof QUICK_CMDS)[number];
+interface SkillCat {
+  name: string;
+  role: string;
+  accent: Accent;
+  items: string[];
+}
 
-const SKILLS_LIST: string[] = [
-  "JavaScript / TypeScript",
-  "React & Next.js",
-  "AWS",
-  "Node / Express",
-  "PostgreSQL / MySQL",
-  "REST & GraphQL",
-  "Docker & CI/CD",
-  "C# & ASP.NET",
-  "IT Support / Sysadmin"
+const SKILLS: SkillCat[] = [
+  {
+    name: "LANGUAGES",
+    role: "core",
+    accent: "gold",
+    items: ["C#", "TypeScript", "JavaScript (ES6+)", "Python", "SQL", "Java"]
+  },
+  {
+    name: "FRONTEND",
+    role: "interface",
+    accent: "cyan",
+    items: ["React", "Next.js", "Tailwind CSS", "HTML", "CSS"]
+  },
+  {
+    name: "BACKEND / APIs",
+    role: "services",
+    accent: "blue",
+    items: ["ASP.NET Core", "Node.js", "Express", "REST APIs", "Postman"]
+  },
+  {
+    name: "CLOUD / DEVOPS",
+    role: "infra",
+    accent: "purple",
+    items: [
+      "AWS (ECS · RDS · EC2 · IAM)",
+      "Azure",
+      "Docker",
+      "CI/CD (GitHub Actions)",
+      "Linux (Ubuntu)",
+      "Git"
+    ]
+  },
+  {
+    name: "DATABASES",
+    role: "storage",
+    accent: "orange",
+    items: ["PostgreSQL", "SQL Server", "MySQL"]
+  },
+  {
+    // Only tools/skills backed by Jorge's IT résumé + the VM/Linux lab project.
+    name: "CYBERSECURITY / IT",
+    role: "defense",
+    accent: "green",
+    items: [
+      "Active Directory",
+      "Azure Entra ID (Azure AD)",
+      "Okta",
+      "AWS IAM",
+      "MFA / Hardware Tokens (YubiKey)",
+      "Authentication & Authorization",
+      "Intune / MDM",
+      "Group Policy",
+      "BitLocker",
+      "Endpoint Protection",
+      "PowerShell",
+      "Splunk",
+      "UFW / Firewall Config",
+      "Network Troubleshooting (VPN · TCP/IP)",
+      "Linux / Kali"
+    ]
+  }
 ];
 
-const CANNED: Record<QuickCmd, string> = {
-  projects: "Sure! Pick any project thread on the left to learn more about it.",
-  resume:
-    "📄 You can download my resume using the button in the Sign On window.",
-  contact:
-    "📬 Best way to reach me: jorge@jorgelazaro.dev — or DM me on LinkedIn.",
-  skills: `🛠 Here's what I work with:\n${SKILLS_LIST.join(" · ")}`
-};
+interface Job {
+  when: string;
+  role: string;
+  org: string;
+  bullets: string[];
+}
 
-const Dot = ({ status }: DotProps) => {
-  const color =
-    status === "online"
-      ? "bg-green-500"
-      : status === "away"
-      ? "bg-yellow-400"
-      : "bg-gray-400";
-  return (
-    <span
-      className={`inline-block w-2.5 h-2.5 rounded-full ${color} shrink-0`}
-    />
-  );
-};
+const CAREER: Job[] = [
+  {
+    when: "2025 — NOW",
+    role: "Desktop Support Technician / End-User Support (Contract)",
+    org: "Ensono / Illumin (IT Associates) — Woodbury, MN",
+    bullets: [
+      "Image and deploy Windows 11 devices with SCCM and Intune for a large-scale Windows 10 → 11 enterprise migration.",
+      "Run pre-upgrade readiness checks — hardware compatibility, backups, OS validation — and post-upgrade troubleshooting.",
+      "Support VDI environments including Citrix, VMware, and Azure Virtual Desktop, plus endpoint security tooling."
+    ]
+  },
+  {
+    when: "2025",
+    role: "Help Desk Technician (Contract)",
+    org: "Lorien — Minnesota (Remote)",
+    bullets: [
+      "Provided Tier 1 support for Windows 10 and legacy Windows 7, running in-depth diagnostics for application, network, and systems issues.",
+      "Managed username, password, and access-right provisioning across multiple proprietary and client applications.",
+      "Documented, tracked, and monitored problems to ensure timely resolution against SLAs."
+    ]
+  },
+  {
+    when: "2024 — NOW",
+    role: "IT Support / Software Developer Intern",
+    org: "Robert Half — Northfield, MN",
+    bullets: [
+      "Developed RESTful API endpoints in C# using DTOs to structure request/response models and improve maintainability.",
+      "Diagnosed and resolved C# backend issues by analyzing logs, stepping through code, and validating API behavior with Postman.",
+      "Refactored and debugged Python services, improving reliability and incident resolution time in production.",
+      "Supported apps in Linux and Azure environments, including Azure Entra ID (Azure AD) identity/access workflows."
+    ]
+  },
+  {
+    when: "2023 — 2024",
+    role: "IT Support / Web Developer",
+    org: "KGP Co. — Faribault, MN",
+    bullets: [
+      "Developed and enhanced production web-app features using TypeScript, React, and REST APIs alongside stakeholders.",
+      "Built internal automation tools and scripts to accelerate troubleshooting, data access, and repetitive IT workflows.",
+      "Supported backend systems and databases by validating API responses and reviewing logs."
+    ]
+  },
+  {
+    when: "2022 — 2023",
+    role: "Software Engineer Intern",
+    org: "Accenture — Richfield, MN",
+    bullets: [
+      "Built and enhanced React and TypeScript components for enterprise-scale applications following established design systems.",
+      "Assisted backend debugging by writing SQL queries, validating API responses, and identifying data inconsistencies.",
+      "Participated in Agile ceremonies and collaborated with senior engineers and cross-functional teams."
+    ]
+  }
+];
 
-function WinChrome({ title, icon, children, className = "" }: WinChromeProps) {
+interface Edu {
+  cred: string;
+  org: string;
+  when: string;
+  note?: string;
+  tone: "blue" | "purple" | "green";
+}
+
+const EDUCATION: Edu[] = [
+  {
+    cred: "A.A.S. — Computer Software Development / Cyber Security & Defense",
+    org: "Minneapolis College",
+    when: "Expected May 2026",
+    tone: "blue",
+    note: "Coursework incl. Internet & Network Security, Ethical Hacking & Network Defense, Linux & Server System Administration, Computer Networks, SDLC."
+  },
+  {
+    cred: "Full-Stack Software Engineering Certificate",
+    org: "Prime Digital Academy",
+    when: "Nov 2024 – Jun 2025",
+    tone: "purple",
+    note: "React, Node/Express, RESTful API development, PostgreSQL, TDD, Agile/Scrum, code reviews."
+  },
+  {
+    // Exact degree title / start term not in source material — confirm with Jorge.
+    cred: "Cybersecurity — Incoming Student",
+    org: "Western Governors University (WGU)",
+    when: "Enrolling",
+    tone: "green",
+    note: "Degree title and start term to be confirmed."
+  }
+];
+
+const SKILL_TREE: { label: string; tone: "blue" | "purple" | "green" }[] = [
+  { label: "SOFTWARE DEVELOPMENT", tone: "blue" },
+  { label: "FULL-STACK ENGINEERING", tone: "purple" },
+  { label: "CYBERSECURITY", tone: "green" }
+];
+
+/* ─── small helpers ─────────────────────────────────────────── */
+
+function prefersReducedMotion(): boolean {
   return (
-    <div
-      className={`flex flex-col rounded-xl overflow-hidden shadow-2xl border border-white/40 ${className}`}
-      style={{ background: "linear-gradient(180deg,#dce9f5 0%,#c8ddf0 100%)" }}
-    >
-      <div
-        className="flex items-center gap-2 px-3 py-1.5 select-none shrink-0"
-        style={{
-          background: "linear-gradient(180deg,#4a9de0 0%,#2272c3 100%)"
-        }}
-      >
-        {icon}
-        <span className="text-white text-sm font-bold tracking-wide drop-shadow flex-1 truncate">
-          {title}
-        </span>
-        <div className="flex gap-1">
-          {(["─", "□", "✕"] as const).map((s, i) => (
-            <button
-              key={i}
-              className="w-5 h-5 flex items-center justify-center rounded text-white text-xs font-bold hover:bg-white/20 transition-colors border border-white/30"
-              style={{ fontSize: 10 }}
-            >
-              {s}
-            </button>
-          ))}
-        </div>
-      </div>
-      {children}
-    </div>
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true
   );
 }
 
-function SignOnPanel() {
-  return (
-    <WinChrome
-      title="Sign On"
-      icon={<RunningMan className="w-4 h-4 text-yellow-300" />}
-      className="w-full md:w-64 shrink-0"
-    >
-      <div className="p-4 flex flex-col gap-3">
-        <div className="flex flex-col items-center gap-2">
-          <div className="w-24 h-24 rounded-full border-4 border-white shadow-md overflow-hidden bg-gradient-to-b from-sky-300 to-blue-500 flex items-center justify-center">
-            <svg viewBox="0 0 40 40" className="w-20 h-20">
-              <rect x="12" y="4" width="16" height="16" rx="8" fill="#f5c5a3" />
-              <rect x="14" y="8" width="4" height="3" rx="1" fill="#333" />
-              <rect x="22" y="8" width="4" height="3" rx="1" fill="#333" />
-              <rect x="13" y="14" width="14" height="3" rx="1" fill="#c9956a" />
-              <rect
-                x="10"
-                y="20"
-                width="20"
-                height="14"
-                rx="4"
-                fill="#4a90d9"
-              />
-              <rect x="4" y="21" width="7" height="10" rx="3" fill="#4a90d9" />
-              <rect x="29" y="21" width="7" height="10" rx="3" fill="#4a90d9" />
-              <rect
-                x="14"
-                y="11"
-                width="12"
-                height="5"
-                rx="2"
-                fill="#555"
-                opacity="0.4"
-              />
-            </svg>
-          </div>
-          <div className="text-center">
-            <div className="font-bold text-gray-800 text-lg leading-tight">
-              Jorge Lazaro
-            </div>
-            <div className="text-xs text-gray-500">
-              Full-Stack Developer / IT Support
-            </div>
-          </div>
-        </div>
-        <div className="text-xs text-gray-600">
-          <span className="font-semibold">ScreenName:</span>{" "}
-          <span className="font-bold text-blue-700">jorgelazaro.dev</span>{" "}
-          <span className="text-green-600">✓</span>
-        </div>
-        <div>
-          <div className="text-xs font-semibold text-gray-700 mb-1">
-            Password
-          </div>
-          <div className="bg-white border border-gray-300 rounded px-2 py-1.5 text-sm text-gray-600 shadow-inner">
-            Building fast, scalable web apps
-          </div>
-        </div>
-        <button
-          className="w-full flex items-center justify-center gap-2 text-white font-bold text-sm py-2 rounded-md shadow-md transition-all hover:brightness-110 active:scale-95"
-          style={{
-            background: "linear-gradient(180deg,#4db8ff 0%,#1a6fc4 100%)",
-            border: "1px solid #0d5aad"
-          }}
-        >
-          <RunningMan className="w-4 h-4" /> Sign On
-        </button>
-        <a
-          href="/Jorge%20Lazaro%20Software%20Developer%20Resume%202026.pdf"
-          download="/Jorge_Lazaro_Software_Developer_Resume_2026.pdf"
-        >
-          <button
-            className="w-full flex items-center justify-center gap-2 text-gray-700 font-semibold text-sm py-2 rounded-md shadow border border-gray-300 hover:brightness-95 active:scale-95 transition-all"
-            style={{
-              background: "linear-gradient(180deg,#eee 0%,#d4d4d4 100%)"
-            }}
-          >
-            <Download size={14} /> Download SWE Resume
-          </button>
-        </a>
-        <a
-          href="/Jorge%20Lazaro%20Info%20Tech.pdf"
-          download="Jorge_Lazaro_Info_Tech.pdf"
-        >
-          <button
-            className="w-full flex items-center justify-center gap-2 text-gray-700 font-semibold text-sm py-2 rounded-md shadow border border-gray-300 hover:brightness-95 active:scale-95 transition-all"
-            style={{
-              background: "linear-gradient(180deg,#eee 0%,#d4d4d4 100%)"
-            }}
-          >
-            <Download size={14} /> Download IT Resume
-          </button>
-        </a>
-        <div className="flex justify-between text-xs text-blue-700 font-semibold">
-          <button className="hover:underline flex items-center gap-1">
-            <HelpCircle size={12} /> Help
-          </button>
-          <button className="hover:underline flex items-center gap-1">
-            <Settings size={12} /> Setup
-          </button>
-        </div>
-        <div className="flex justify-between text-xs text-gray-500 pt-1 border-t border-gray-200">
-          <span className="flex items-center gap-1">
-            <span className="w-2 h-2 rounded-full bg-green-500 inline-block" />{" "}
-            Version: 1
-          </span>
-          <span>Version:1 ▾</span>
-        </div>
-      </div>
-    </WinChrome>
-  );
+interface Toast {
+  id: number;
+  title: string;
+  body: string;
+  xp: string;
 }
 
-// ─── Buddy List as bottom sheet / drawer on mobile ────────────────────────────
-function BuddyList({
-  activeProjectId,
-  onOpen
-}: {
-  activeProjectId: string | null;
-  onOpen: (p: Project) => void;
-}) {
-  return (
-    <div className="flex flex-col h-full">
-      <div className="px-3 py-2 text-xs font-bold text-gray-600 border-b border-blue-100 flex items-center gap-1 shrink-0">
-        <span className="text-base">G</span> Buddy List
-      </div>
-      <div className="flex-1 overflow-y-auto px-2 py-2 space-y-3 text-xs min-h-0">
-        {(["online", "away", "offline"] as Status[]).map((s) => {
-          const filtered = PROJECTS.filter((p) => p.status === s);
-          if (filtered.length === 0) return null;
-          const label = s.charAt(0).toUpperCase() + s.slice(1);
-          const color =
-            s === "online"
-              ? "text-green-600"
-              : s === "away"
-              ? "text-yellow-600"
-              : "text-gray-400";
-          return (
-            <div key={s}>
-              <div
-                className={`font-bold ${color} mb-1 flex items-center gap-1`}
-              >
-                <Dot status={s} /> {label}
-              </div>
-              {filtered.map((p) => (
-                <button
-                  key={p.id}
-                  onClick={() => onOpen(p)}
-                  className={`w-full flex items-center gap-1 px-2 py-1.5 rounded text-left text-gray-700 hover:bg-blue-100 transition-colors ${
-                    activeProjectId === p.id ? "bg-blue-100 font-semibold" : ""
-                  }`}
-                >
-                  {p.icon}
-                  <span className="truncate">{p.name}</span>
-                  {p.status === "online" && <Dot status="online" />}
-                </button>
-              ))}
-            </div>
-          );
-        })}
-      </div>
-      <div className="border-t border-blue-200 px-2 py-2 flex gap-3 text-xs text-gray-500 shrink-0">
-        <button className="hover:text-yellow-600 flex items-center gap-1">
-          <TriangleAlert size={12} /> Warn
-        </button>
-        <button className="hover:text-red-500 flex items-center gap-1">
-          <Ban size={12} /> Block
-        </button>
-      </div>
-      <div className="px-2 pb-2 flex gap-1.5 items-center shrink-0">
-        <div className="w-2.5 h-2.5 rounded-full bg-blue-400" />
-        <div className="w-2.5 h-2.5 rounded-full bg-blue-600" />
-        <div className="w-2.5 h-2.5 rounded-full bg-blue-800" />
-        <div className="w-1.5 h-1.5 rounded-full bg-gray-400" />
-      </div>
-    </div>
-  );
-}
+/* ─── boot sequence (one-time, skippable, motion-safe) ──────── */
 
-function MessengerWindow() {
-  const [activeProject, setActiveProject] = useState<Project | null>(null);
-  const [showBuddy, setShowBuddy] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      from: "system",
-      text: "Hello. Here are my projects — let me know if you have any questions."
-    },
-    { from: "system", text: "Pick a thread to dive in:" }
-  ]);
-  const [input, setInput] = useState<string>("");
-  const bottomRef = useRef<HTMLDivElement>(null);
-
+function BootScreen({ onDone }: { onDone: () => void }) {
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+    try {
+      sessionStorage.setItem("jl_booted", "1");
+    } catch {
+      /* private mode — harmless */
+    }
+    const finish = () => onDone();
+    const t = window.setTimeout(finish, 1050);
+    const opts = { once: true } as const;
+    window.addEventListener("keydown", finish, opts);
+    window.addEventListener("pointerdown", finish, opts);
+    window.addEventListener("wheel", finish, opts);
+    window.addEventListener("touchmove", finish, opts);
+    return () => {
+      window.clearTimeout(t);
+      window.removeEventListener("keydown", finish);
+      window.removeEventListener("pointerdown", finish);
+      window.removeEventListener("wheel", finish);
+      window.removeEventListener("touchmove", finish);
+    };
+  }, [onDone]);
 
-  const openProject = (proj: Project): void => {
-    setActiveProject(proj);
-    setShowBuddy(false);
-    setMessages((prev) => [
-      ...prev,
-      { from: "user", text: `Tell me about ${proj.name}` },
-      { from: "system", text: proj.desc, tags: proj.tech, link: proj.link }
-    ]);
-  };
+  return (
+    <div className="boot" aria-hidden="true">
+      <div className="boot__line">JORGE-OS v2.026 &mdash; cold boot</div>
+      <div className="boot__line">&gt; loading profile ......... OK</div>
+      <div className="boot__line">&gt; mounting /projects ...... OK</div>
+      <div className="boot__line">&gt; net link: OPEN TO WORK</div>
+      <div className="boot__line">&gt; ready.</div>
+      <div className="boot__skip">PRESS ANY KEY / TAP TO SKIP</div>
+    </div>
+  );
+}
 
-  const sendMessage = (overrideInput?: string): void => {
-    const raw = (overrideInput ?? input).trim();
-    const trimmed = raw.toLowerCase() as QuickCmd;
-    if (!trimmed) return;
-    const reply =
-      CANNED[trimmed] ??
-      "I didn't catch that — try: projects, resume, contact, or skills.";
-    setMessages((prev) => [
-      ...prev,
-      { from: "user", text: raw },
-      { from: "system", text: reply }
-    ]);
-    setInput("");
-  };
+/* ─── reusable bits ────────────────────────────────────────── */
 
-  const handleKey = (e: KeyboardEvent<HTMLInputElement>): void => {
-    if (e.key === "Enter") sendMessage();
+function ResumeButtons({ variant = "ghost" }: { variant?: "ghost" | "dark" }) {
+  const cls = variant === "dark" ? "btn btn--dark" : "btn btn--ghost";
+  return (
+    <>
+      <a
+        className={cls}
+        href={PROFILE.resumeSwe}
+        download="Jorge_Lazaro_Software_Developer_Resume_2026.pdf"
+      >
+        <IconDownload /> SWE RÉSUMÉ
+      </a>
+      <a
+        className={cls}
+        href={PROFILE.resumeIt}
+        download="Jorge_Lazaro_IT_Resume.pdf"
+      >
+        <IconDownload /> IT RÉSUMÉ
+      </a>
+    </>
+  );
+}
+
+function QuestCard({
+  project,
+  onExpand
+}: {
+  project: Project;
+  onExpand: (id: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const panelId = `quest-${project.id}-detail`;
+
+  const toggle = () => {
+    setOpen((v) => {
+      if (!v) onExpand(project.id);
+      return !v;
+    });
   };
 
   return (
-    <WinChrome
-      title="AOL System Msg: jorgelazaro.dev"
-      icon={<AolIcon className="w-5 h-5" />}
-      className="flex-1 min-w-0 min-h-0"
+    <article
+      className={`quest ${project.featured ? "quest--featured" : ""}`}
+      data-accent={project.accent}
     >
-      {/* menu bar */}
-      <div
-        className="flex gap-4 px-3 py-1 text-xs text-gray-700 border-b border-blue-200 bg-white/50 shrink-0"
-        style={{ fontFamily: "Tahoma, sans-serif" }}
-      >
-        {(["File", "Edit", "Insert", "People"] as const).map((m) => (
-          <button key={m} className="hover:underline">
-            {m}
-          </button>
-        ))}
-        {/* Mobile buddy list toggle */}
-        <button
-          onClick={() => setShowBuddy((v) => !v)}
-          className="ml-auto flex items-center gap-1 md:hidden text-blue-600 font-semibold"
-        >
-          Projects{" "}
-          {showBuddy ? <ChevronLeft size={12} /> : <ChevronRight size={12} />}
-        </button>
+      <div className="quest__top">
+        <span className="quest__glyph">{project.glyph}</span>
+        <h3 className="quest__name">{project.name}</h3>
+        <span className="badge">{project.type}</span>
       </div>
+      <div className="quest__body">
+        <p className="quest__tagline">{project.tagline}</p>
 
-      <div className="flex flex-1 min-h-0 relative">
-        {/* ── chat area ── */}
-        <div
-          className={`flex flex-col flex-1 min-w-0 min-h-0 ${
-            showBuddy ? "hidden md:flex" : "flex"
-          }`}
+        <div>
+          <div className="field-k">MISSION</div>
+          <p className="quest__mission">{project.mission}</p>
+        </div>
+
+        <div>
+          <div className="field-k">STACK</div>
+          <div className="chip-row">
+            {project.stack.map((t) => (
+              <span key={t} className="chip">
+                {t}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {project.security && (
+          <div className="sec-note">
+            <div className="field-k">▲ SECURITY NOTES</div>
+            <p className="quest__mission">{project.security}</p>
+          </div>
+        )}
+
+        <button
+          type="button"
+          className="disclosure-btn"
+          aria-expanded={open}
+          aria-controls={panelId}
+          onClick={toggle}
         >
-          {/* IM header */}
-          <div className="flex items-center gap-2 px-3 py-2 bg-white/60 border-b border-blue-100 shrink-0">
-            <RunningMan className="w-4 h-4 text-yellow-500" />
-            <span className="font-bold text-sm text-gray-800">
-              Jorge Lazaro
-            </span>
-            <Dot status="online" />
-          </div>
+          <IconChevron open={open} />
+          {open ? "HIDE MISSION LOG" : "VIEW MISSION LOG"}
+        </button>
 
-          {/* system msg label */}
-          <div className="mx-3 mt-2 mb-1 shrink-0">
-            <div className="flex items-center gap-2 bg-white/80 border border-gray-200 rounded px-3 py-1.5 text-sm text-gray-600 shadow-inner">
-              <AolIcon className="w-4 h-4 shrink-0" />
-              <span className="font-semibold">AOL System Msg</span>
+        <div className="disclosure-panel" id={panelId} hidden={!open}>
+          <div>
+            <div className="field-k">OBJECTIVES CLEARED</div>
+            <ul className="obj-list">
+              {project.objectives.map((o) => (
+                <li key={o}>{o}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {(project.demo || project.source) && (
+          <div className="quest__actions">
+            {project.demo && (
+              <a
+                className="btn btn--primary"
+                href={project.demo}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <IconExternal /> LIVE DEMO
+              </a>
+            )}
+            {project.source && (
+              <a
+                className="btn btn--ghost"
+                href={project.source}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <IconGitHub /> SOURCE CODE
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+    </article>
+  );
+}
+
+/* ─── page ─────────────────────────────────────────────────── */
+
+const NAV = [
+  { href: "#home", label: "HOME" },
+  { href: "#projects", label: "PROJECTS" },
+  { href: "#skills", label: "SKILLS" },
+  { href: "#experience", label: "EXPERIENCE" },
+  { href: "#contact", label: "CONTACT" }
+];
+
+const KONAMI = [
+  "ArrowUp",
+  "ArrowUp",
+  "ArrowDown",
+  "ArrowDown",
+  "ArrowLeft",
+  "ArrowRight",
+  "ArrowLeft",
+  "ArrowRight",
+  "b",
+  "a"
+];
+
+export default function App() {
+  // one-time boot screen (session-scoped, skipped entirely under reduced motion)
+  const [booting, setBooting] = useState(() => {
+    if (prefersReducedMotion()) return false;
+    try {
+      return sessionStorage.getItem("jl_booted") !== "1";
+    } catch {
+      return true;
+    }
+  });
+  const [toasts, setToasts] = useState<Toast[]>([]);
+  const [eggFound, setEggFound] = useState(false);
+  const unlocked = useRef<Set<string>>(new Set());
+  const openedProjects = useRef<Set<string>>(new Set());
+  const toastSeq = useRef(0);
+
+  const dismissToast = useCallback((id: number) => {
+    setToasts((list) => list.filter((t) => t.id !== id));
+  }, []);
+
+  const unlock = useCallback(
+    (key: string, toast: Omit<Toast, "id">) => {
+      if (unlocked.current.has(key)) return;
+      unlocked.current.add(key);
+      const id = ++toastSeq.current;
+      setToasts((list) => [...list, { ...toast, id }]);
+      window.setTimeout(() => dismissToast(id), 6000);
+    },
+    [dismissToast]
+  );
+
+  const handleExpand = useCallback(
+    (id: string) => {
+      openedProjects.current.add(id);
+      if (openedProjects.current.size >= 3) {
+        unlock("deep-diver", {
+          title: "ACHIEVEMENT UNLOCKED",
+          body: "Deep Diver — opened three project mission logs.",
+          xp: "+50 Recruiter XP"
+        });
+      }
+    },
+    [unlock]
+  );
+
+  // Konami-style easter egg
+  useEffect(() => {
+    let idx = 0;
+    const onKey = (e: KeyboardEvent) => {
+      const want = KONAMI[idx];
+      if (e.key.toLowerCase() === want.toLowerCase()) {
+        idx += 1;
+        if (idx === KONAMI.length) {
+          idx = 0;
+          setEggFound(true);
+          unlock("source-inspector", {
+            title: "ACHIEVEMENT UNLOCKED",
+            body: "You inspected the source.",
+            xp: "+100 Recruiter XP"
+          });
+        }
+      } else {
+        idx = e.key === KONAMI[0] ? 1 : 0;
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [unlock]);
+
+  const featured = PROJECTS.filter((p) => p.featured);
+  const secondary = PROJECTS.filter((p) => !p.featured);
+
+  return (
+    <>
+      <a className="skip-link" href="#home">
+        Skip to content
+      </a>
+      {booting && <BootScreen onDone={() => setBooting(false)} />}
+
+      <div className="crt">
+        <div className="scanlines" />
+        <div className="vignette" />
+
+        {/* ── nav ── */}
+        <nav className="nav" aria-label="Primary">
+          <div className="wrap nav-inner">
+            <a className="wordmark" href="#home">
+              JL<span className="blink" aria-hidden="true">_</span>
+            </a>
+            <ul className="nav-list">
+              {NAV.map((n) => (
+                <li key={n.href}>
+                  <a className="nav-link" href={n.href}>
+                    {n.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+            <a
+              className="btn btn--primary"
+              href={PROFILE.resumeSwe}
+              download="Jorge_Lazaro_Software_Developer_Resume_2026.pdf"
+            >
+              <IconDownload /> RÉSUMÉ
+            </a>
+          </div>
+        </nav>
+
+        <main>
+          {/* ── hero ── */}
+          <header id="home" className="wrap hero">
+            <div>
+              <p className="hero-kicker">▶ NEW GAME — PLAYER 1</p>
+              <h1 className="hero-name">{PROFILE.name}</h1>
+              <p className="hero-role">{PROFILE.role.toUpperCase()}</p>
+              <p className="hero-blurb">
+                {PROFILE.blurb}{" "}
+                <span className="hl-sec">{PROFILE.blurbSecurity}</span>
+              </p>
+
+              <nav className="menu" aria-label="Jump to section">
+                <a className="menu-cmd" href="#projects">
+                  <IconCaret className="menu-cmd__caret w-3 h-3" />
+                  <span>VIEW PROJECTS</span>
+                </a>
+                <a className="menu-cmd" href="#experience">
+                  <IconCaret className="menu-cmd__caret w-3 h-3" />
+                  <span>EXPERIENCE</span>
+                </a>
+                <a className="menu-cmd" href="#skills">
+                  <IconCaret className="menu-cmd__caret w-3 h-3" />
+                  <span>SKILLS</span>
+                </a>
+                <a
+                  className="menu-cmd"
+                  href={PROFILE.resumeSwe}
+                  download="Jorge_Lazaro_Software_Developer_Resume_2026.pdf"
+                >
+                  <IconCaret className="menu-cmd__caret w-3 h-3" />
+                  <span>RÉSUMÉ</span>
+                </a>
+                <a className="menu-cmd" href="#contact">
+                  <IconCaret className="menu-cmd__caret w-3 h-3" />
+                  <span>CONTACT</span>
+                </a>
+              </nav>
+
+              <p className="press-start blink" aria-hidden="true">
+                ▶ SELECT A COMMAND
+              </p>
             </div>
-          </div>
 
-          {/* messages */}
-          <div className="flex-1 overflow-y-auto px-3 py-2 space-y-2 min-h-0">
-            {messages.map((m, i) => (
-              <div key={i}>
-                {m.from === "system" ? (
-                  <div className="text-sm text-gray-700 leading-relaxed">
-                    <p>{m.text}</p>
-                    {m.tags && (
-                      <div className="flex flex-wrap gap-1.5 mt-1.5">
-                        {m.tags.map((t) => (
-                          <span
-                            key={t}
-                            className="bg-blue-100 border border-blue-300 text-blue-700 text-xs px-2 py-0.5 rounded-full font-medium"
-                          >
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                    {m.link && (
-                      <a
-                        href={m.link}
-                        className="text-blue-600 underline text-xs mt-1 inline-block hover:text-blue-800"
-                      >
-                        View project →
-                      </a>
-                    )}
-                  </div>
-                ) : m.text === "Pick a thread to dive in:" ? (
+            <aside className="panel" aria-label="Developer status">
+              <div className="panel-hd">
+                <IconTerminal className="w-3.5 h-3.5" /> STATUS.SYS
+              </div>
+              <div style={{ padding: "1rem", display: "grid", gap: "1rem" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.9rem"
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 64,
+                      height: 64,
+                      border: "3px solid var(--color-line)",
+                      boxShadow: "3px 3px 0 var(--color-ink)",
+                      flexShrink: 0
+                    }}
+                  >
+                    <PixelAvatar />
+                  </span>
                   <div>
-                    <p className="text-sm text-gray-700 mb-2">{m.text}</p>
-                    <div className="space-y-1.5">
-                      {PROJECTS.map((p) => (
-                        <button
-                          key={p.id}
-                          onClick={() => openProject(p)}
-                          className="w-full flex items-center justify-between px-3 py-2 rounded bg-white/70 border border-gray-200 hover:bg-blue-50 hover:border-blue-300 transition-all text-sm font-medium text-gray-700 shadow-sm group active:scale-[0.98]"
-                        >
-                          <span className="flex items-center">
-                            {p.icon}
-                            {p.name}
-                          </span>
-                          <span className="text-gray-400 group-hover:text-blue-400">
-                            ›
-                          </span>
-                        </button>
+                    <div
+                      className="font-pixel"
+                      style={{ fontSize: 10, color: "var(--color-navy)" }}
+                    >
+                      {PROFILE.name}
+                    </div>
+                    <div className="font-term" style={{ fontSize: "1.15rem" }}>
+                      <span className="lv">LV.99</span>{" "}
+                      <span style={{ color: "var(--color-blue-ink)" }}>
+                        Software Developer
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="stat-grid">
+                  <div className="stat-cell" data-tone="blue">
+                    <div className="stat-cell__k">ROLE</div>
+                    <div
+                      className="stat-cell__v"
+                      style={{ color: "var(--color-blue-ink)" }}
+                    >
+                      Software Developer
+                    </div>
+                  </div>
+                  <div className="stat-cell">
+                    <div className="stat-cell__k">LOCATION</div>
+                    <div className="stat-cell__v">{PROFILE.location}</div>
+                  </div>
+                  <div className="stat-cell" data-tone="purple">
+                    <div className="stat-cell__k">SPECIALTY</div>
+                    <div className="spec-tags">
+                      {PROFILE.specialtyTags.map((t) => (
+                        <span key={t.label} className="tag" data-tone={t.tone}>
+                          {t.label}
+                        </span>
                       ))}
                     </div>
                   </div>
-                ) : (
-                  <div
-                    className={`flex ${m.from === "user" ? "justify-end" : ""}`}
-                  >
-                    <span
-                      className={`text-sm px-2.5 py-1.5 rounded-lg max-w-[85%] shadow-sm ${
-                        m.from === "user"
-                          ? "bg-blue-600 text-white rounded-br-none"
-                          : "bg-white border border-gray-200 text-gray-700 rounded-bl-none"
-                      }`}
+                  <div className="stat-cell" data-tone="green">
+                    <div className="stat-cell__k">STATUS</div>
+                    <div
+                      className="stat-cell__v"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.4rem",
+                        color: "var(--color-green-ink)"
+                      }}
                     >
-                      {m.text}
-                    </span>
+                      <span className="dot dot--on" aria-hidden="true" />
+                      {PROFILE.status}
+                    </div>
                   </div>
-                )}
+                </div>
               </div>
-            ))}
-            <div ref={bottomRef} />
-          </div>
+            </aside>
+          </header>
 
-          {/* input bar */}
-          <div className="border-t border-blue-200 bg-white/60 px-3 py-2 shrink-0">
-            <div className="flex gap-2 items-center bg-white border border-gray-300 rounded shadow-inner px-2 py-1">
-              <input
-                className="flex-1 text-sm outline-none bg-transparent text-gray-700 placeholder-gray-400"
-                placeholder="Type a command or keyword..."
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKey}
-              />
-              <button className="text-gray-400 hover:text-blue-500 text-xs">
-                △
-              </button>
-              <button className="text-gray-400 hover:text-blue-500">
-                <Volume2 size={14} />
-              </button>
+          {/* ── projects ── */}
+          <section
+            id="projects"
+            className="section section--projects"
+            aria-labelledby="projects-h"
+          >
+            <div className="wrap">
+              <p className="section-tag">
+                <IconTrophy className="w-3.5 h-3.5" /> QUEST BOARD
+              </p>
+              <h2 id="projects-h" className="section-title">
+                PROJECTS
+              </h2>
+
+              <div className="quest-grid">
+                {featured.map((p) => (
+                  <QuestCard key={p.id} project={p} onExpand={handleExpand} />
+                ))}
+              </div>
+
+              <p
+                className="section-tag"
+                style={{ marginTop: "2rem", color: "var(--color-dark-dim)" }}
+              >
+                SIDE QUESTS
+              </p>
+              <div className="quest-grid">
+                {secondary.map((p) => (
+                  <QuestCard key={p.id} project={p} onExpand={handleExpand} />
+                ))}
+              </div>
             </div>
-            <div className="flex gap-2 mt-2 flex-wrap">
-              {QUICK_CMDS.map((cmd) => (
-                <button
-                  key={cmd}
-                  className="px-3 py-1 rounded-full bg-white border border-gray-300 text-xs text-gray-600 hover:border-blue-400 hover:text-blue-600 shadow-sm transition-all active:scale-95"
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    sendMessage(cmd);
+          </section>
+
+          {/* ── skills ── */}
+          <section
+            id="skills"
+            className="section section--skills"
+            aria-labelledby="skills-h"
+          >
+            <div className="wrap">
+              <p className="section-tag">
+                <IconTerminal className="w-3.5 h-3.5" /> LOADOUT
+              </p>
+              <h2 id="skills-h" className="section-title">
+                SKILLS &amp; TECH STACK
+              </h2>
+
+              <div className="panel" style={{ padding: "1.5rem" }}>
+                <div className="inv-grid">
+                  {SKILLS.map((cat) => (
+                    <div
+                      key={cat.name}
+                      className="inv-cat"
+                      data-accent={cat.accent}
+                    >
+                      <div className="inv-cat__hd">
+                        <span className="inv-cat__name">{cat.name}</span>
+                        <span className="inv-cat__role">/ {cat.role}</span>
+                      </div>
+                      <div className="inv-slots">
+                        {cat.items.map((it) => (
+                          <span key={it} className="inv-slot">
+                            {it}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* ── experience ── */}
+          <section
+            id="experience"
+            className="section section--experience"
+            aria-labelledby="experience-h"
+          >
+            <div className="wrap">
+              <p className="section-tag">
+                <IconCaret className="w-3.5 h-3.5" /> CAREER LOG
+              </p>
+              <h2 id="experience-h" className="section-title">
+                EXPERIENCE
+              </h2>
+
+              <div className="log">
+                {CAREER.map((job) => (
+                  <div className="log-item" key={job.role + job.when}>
+                    <div className="log-item__when">{job.when}</div>
+                    <div className="log-item__card">
+                      <div className="log-item__role">{job.role}</div>
+                      <div className="log-item__org">{job.org}</div>
+                      <ul className="log-item__bullets">
+                        {job.bullets.map((b) => (
+                          <li key={b}>{b}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <p
+                className="section-tag"
+                style={{ marginTop: "2rem", color: "var(--color-orange)" }}
+              >
+                TRAINING
+              </p>
+
+              <div
+                className="skill-tree"
+                role="img"
+                aria-label="Progression: software development, then full-stack engineering, now adding cybersecurity — skills accumulate, they do not replace each other"
+              >
+                {SKILL_TREE.map((s, i) => (
+                  <span key={s.label} style={{ display: "contents" }}>
+                    {i > 0 && (
+                      <span className="tree-link" aria-hidden="true">
+                        ↓
+                      </span>
+                    )}
+                    <span
+                      className="tree-node"
+                      data-tone={s.tone}
+                      aria-hidden="true"
+                    >
+                      {s.label}
+                    </span>
+                  </span>
+                ))}
+              </div>
+              <p className="skill-tree__caption">
+                Each stage adds to the stack — it doesn&rsquo;t replace the last.
+              </p>
+
+              <div
+                className="panel"
+                style={{ padding: "1.25rem", marginTop: "1rem" }}
+              >
+                {EDUCATION.map((e) => (
+                  <div key={e.cred} className="edu-item" data-tone={e.tone}>
+                    <div className="edu-item__org">{e.org}</div>
+                    <div className="edu-item__cred">{e.cred}</div>
+                    <div className="edu-item__when">{e.when}</div>
+                    {e.note && <p className="edu-item__note">{e.note}</p>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* ── contact ── */}
+          <section
+            id="contact"
+            className="section section--contact"
+            aria-labelledby="contact-h"
+          >
+            <div className="wrap">
+              <p className="section-tag">
+                <IconMail className="w-3.5 h-3.5" /> FINAL BOSS
+              </p>
+              <h2 id="contact-h" className="section-title">
+                CONTACT
+              </h2>
+
+              <div className="panel contact-card">
+                <p className="contact-h">READY TO BUILD SOMETHING?</p>
+                <p
+                  className="font-term"
+                  style={{
+                    fontSize: "1.25rem",
+                    color: "var(--color-title)",
+                    marginTop: "0.5rem"
                   }}
                 >
-                  {cmd}
-                </button>
-              ))}
+                  {PROFILE.name} · {PROFILE.role} · {PROFILE.location}
+                </p>
+
+                <div className="contact-actions">
+                  <a className="btn btn--primary" href={`mailto:${PROFILE.email}`}>
+                    <IconMail /> EMAIL ME
+                  </a>
+                  {LINKEDIN_URL && (
+                    <a
+                      className="btn btn--ghost"
+                      href={LINKEDIN_URL}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <IconLinkedIn /> LINKEDIN
+                    </a>
+                  )}
+                  <a
+                    className="btn btn--ghost"
+                    href={PROFILE.github}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <IconGitHub /> GITHUB
+                  </a>
+                  <ResumeButtons />
+                </div>
+
+                <div className="status-line">
+                  <span className="dot dot--on" aria-hidden="true" />
+                  STATUS: AVAILABLE FOR NEW OPPORTUNITIES
+                </div>
+              </div>
             </div>
+          </section>
+        </main>
+
+        <footer className="footer">
+          <div
+            className="wrap"
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "0.75rem",
+              alignItems: "center",
+              justifyContent: "space-between"
+            }}
+          >
+            <span>
+              © {new Date().getFullYear()} {PROFILE.name} · {PROFILE.location} ·
+              built with React, TypeScript &amp; Vite
+            </span>
+            {eggFound && (
+              <span
+                style={{ display: "inline-flex", alignItems: "center", gap: 8 }}
+              >
+                <PixelBuddy />
+                <span className="font-term" style={{ fontSize: "1.1rem" }}>
+                  ▲▲▼▼◀▶◀▶ B A — nice.
+                </span>
+              </span>
+            )}
           </div>
-        </div>
-
-        {/* ── buddy list sidebar: full panel on mobile, side column on md+ ── */}
-        <div
-          className={`
-          border-l border-blue-200 bg-white/50 min-h-0
-          w-full md:w-44 md:flex md:flex-col md:shrink-0
-          ${showBuddy ? "flex flex-col" : "hidden md:flex"}
-        `}
-        >
-          <BuddyList
-            activeProjectId={activeProject?.id ?? null}
-            onOpen={openProject}
-          />
-        </div>
+        </footer>
       </div>
-    </WinChrome>
-  );
-}
 
-export default function App() {
-  return (
-    <div
-      className="min-h-screen flex items-start md:items-center justify-center p-3 md:p-6 overflow-auto"
-      style={{
-        background:
-          "linear-gradient(180deg, #87ceeb 0%, #b8e0f7 45%, #7ab648 45%, #5a8f2e 100%)"
-      }}
-    >
-      {/* cloud blobs */}
-      <div className="absolute top-8 left-16 w-32 h-10 rounded-full bg-white/60 blur-sm pointer-events-none" />
-      <div className="absolute top-12 left-32 w-20 h-8 rounded-full bg-white/50 blur-sm pointer-events-none" />
-      <div className="absolute top-6 right-24 w-40 h-12 rounded-full bg-white/60 blur-sm pointer-events-none" />
-
-      {/* Mobile: stack vertically. Desktop: side by side */}
-      <div
-        className="flex flex-col md:flex-row gap-4 md:gap-6 items-stretch w-full max-w-5xl md:items-start"
-        style={{ minHeight: "calc(100dvh - 1.5rem)" }}
-      >
-        <SignOnPanel />
-        {/* Messenger takes remaining height on mobile */}
-        <div
-          className="flex flex-col flex-1 min-h-0"
-          style={{ height: "calc(100dvh - 1.5rem - 480px)", minHeight: 420 }}
-        >
-          <MessengerWindow />
-        </div>
+      {/* ── achievement toasts ── */}
+      <div className="toast-wrap" role="status" aria-live="polite">
+        {toasts.map((t) => (
+          <div className="toast" key={t.id}>
+            <IconTrophy className="toast__icon w-4 h-4" />
+            <div>
+              <div className="toast__title">{t.title}</div>
+              <div className="toast__body">{t.body}</div>
+              <div className="toast__xp">{t.xp}</div>
+            </div>
+            <button
+              type="button"
+              className="toast__close"
+              aria-label="Dismiss notification"
+              onClick={() => dismissToast(t.id)}
+            >
+              ✕
+            </button>
+          </div>
+        ))}
       </div>
-    </div>
+    </>
   );
 }
